@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/universal-agent-chat/static/css/main.fc7c39e9.css",
+    "main.js": "/universal-agent-chat/static/js/main.e5af53bf.js",
+    "static/js/453.09d55499.chunk.js": "/universal-agent-chat/static/js/453.09d55499.chunk.js",
+    "index.html": "/universal-agent-chat/index.html",
+    "main.fc7c39e9.css.map": "/universal-agent-chat/static/css/main.fc7c39e9.css.map",
+    "main.e5af53bf.js.map": "/universal-agent-chat/static/js/main.e5af53bf.js.map",
+    "453.09d55499.chunk.js.map": "/universal-agent-chat/static/js/453.09d55499.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.fc7c39e9.css",
+    "static/js/main.e5af53bf.js"
+  ]
+}
