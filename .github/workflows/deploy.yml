@@ -1,0 +1,95 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run tests
+      run: npm test -- --coverage --watchAll=false
+      
+    - name: Build application
+      run: npm run build
+      env:
+        # Default demo configuration for GitHub Pages
+        REACT_APP_AGENT_NAME: Demo Agent
+        REACT_APP_AGENT_TYPE: demonstration assistant
+        REACT_APP_WELCOME_TITLE: Welcome to Universal Agent Chat!
+        REACT_APP_WELCOME_MESSAGE: This is a demo of the universal chat interface. Configure your own agent by setting environment variables.
+        REACT_APP_INPUT_PLACEHOLDER: Try asking a question to see how it works...
+        REACT_APP_API_URL: https://your-backend-api.com
+        
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-files
+        path: build/
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+      
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+      
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build for production
+      run: npm run build
+      env:
+        # Production demo configuration
+        REACT_APP_AGENT_NAME: Universal Agent Chat
+        REACT_APP_AGENT_TYPE: demonstration assistant
+        REACT_APP_WELCOME_TITLE: Welcome to Universal Agent Chat!
+        REACT_APP_WELCOME_MESSAGE: A configurable React chat interface for any AI agent. Fork this repo and customize for your own agent!
+        REACT_APP_INPUT_PLACEHOLDER: This is a demo interface - connect your own backend to get started
+        REACT_APP_API_URL: https://demo-api.example.com
+        PUBLIC_URL: /universal-agent-chat
+        
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+      
+    - name: Upload to GitHub Pages
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: build/
+        
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4 
