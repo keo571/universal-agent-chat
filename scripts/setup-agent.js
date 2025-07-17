@@ -18,20 +18,7 @@ const agentConfigs = {
         message: 'I can help you with coding questions, debugging, and writing better code!',
         placeholder: 'Ask me about coding, debugging, or software development...'
     },
-    math: {
-        name: 'Math Tutor',
-        type: 'mathematics tutor',
-        title: 'Welcome to Math Tutor!',
-        message: 'I\'m here to help you solve math problems and understand concepts!',
-        placeholder: 'Ask me any math question or share a problem to solve...'
-    },
-    support: {
-        name: 'Customer Service',
-        type: 'customer service representative',
-        title: 'Welcome to Customer Service!',
-        message: 'How can I assist you today? I\'m here to help with your questions and concerns.',
-        placeholder: 'Describe your question or issue...'
-    },
+
     general: {
         name: 'AI Assistant',
         type: 'general assistant',

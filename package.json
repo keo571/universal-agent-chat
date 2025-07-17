@@ -41,7 +41,9 @@
     "build:prod": "npm run build && npm run serve",
     "docker:dev": "docker-compose up frontend-dev",
     "docker:prod": "docker-compose up frontend-prod",
-    "docker:multi": "docker-compose up frontend-dev code-assistant math-tutor",
+    "docker:multi": "docker-compose up frontend-dev code-assistant",
+    "deploy": "gh-pages -d build",
+    "predeploy": "npm run build",
     "deploy:vercel": "vercel --prod",
     "deploy:netlify": "netlify deploy --prod --dir=build",
     "env:dev": "cp environments/development.env .env",
@@ -65,5 +67,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
   }
 }

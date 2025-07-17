@@ -4,7 +4,7 @@ A universal React chat interface that can be configured for any type of AI agent
 
 ## Features
 
-- 🤖 **Universal Agent Support** - Works with any backend agent (SQL, Code, Math, Customer Service, etc.)
+- 🤖 **Universal Agent Support** - Works with any backend agent (SQL, Code, etc.)
 - 💬 **Modern Chat Interface** - Beautiful message bubbles with typing indicators
 - 📱 **Responsive Design** - Works seamlessly on desktop and mobile
 - ⚙️ **Fully Configurable** - Customize agent name, messages, and appearance via environment variables

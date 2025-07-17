@@ -58,26 +58,6 @@ services:
     networks:
       - agent-network
 
-  # Math Tutor variant
-  math-tutor:
-    build:
-      context: .
-      target: development
-    ports:
-      - "3002:3000"
-    volumes:
-      - .:/app
-      - /app/node_modules
-    environment:
-      - REACT_APP_API_URL=http://localhost:5004
-      - REACT_APP_AGENT_NAME=Math Tutor
-      - REACT_APP_AGENT_TYPE=mathematics tutor
-      - REACT_APP_WELCOME_TITLE=Welcome to Math Tutor!
-      - REACT_APP_WELCOME_MESSAGE=I'm here to help you solve math problems and understand concepts!
-      - REACT_APP_INPUT_PLACEHOLDER=Ask me any math question or share a problem to solve...
-    networks:
-      - agent-network
-
 networks:
   agent-network:
-    driver: bridge 
+    driver: bridge

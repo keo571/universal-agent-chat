@@ -51,23 +51,7 @@ REACT_APP_WELCOME_MESSAGE=I can help you with coding questions, debugging, and w
 REACT_APP_INPUT_PLACEHOLDER=Ask me about coding, debugging, or software development...
 ```
 
-### Math Tutor
-```bash
-REACT_APP_AGENT_NAME=Math Tutor
-REACT_APP_AGENT_TYPE=mathematics tutor
-REACT_APP_WELCOME_TITLE=Welcome to Math Tutor!
-REACT_APP_WELCOME_MESSAGE=I'm here to help you solve math problems and understand concepts!
-REACT_APP_INPUT_PLACEHOLDER=Ask me any math question or share a problem to solve...
-```
 
-### Customer Service Bot
-```bash
-REACT_APP_AGENT_NAME=Customer Service
-REACT_APP_AGENT_TYPE=customer service representative
-REACT_APP_WELCOME_TITLE=Welcome to Customer Service!
-REACT_APP_WELCOME_MESSAGE=How can I assist you today? I'm here to help with your questions and concerns.
-REACT_APP_INPUT_PLACEHOLDER=Describe your question or issue...
-```
 
 ### General AI Assistant
 ```bash
@@ -85,8 +69,6 @@ Use the built-in setup script for common agent types:
 ```bash
 npm run setup-agent sql          # SQL Agent
 npm run setup-agent code         # Code Assistant  
-npm run setup-agent math         # Math Tutor
-npm run setup-agent support      # Customer Service
 npm run setup-agent general      # General AI Assistant
 ```
 

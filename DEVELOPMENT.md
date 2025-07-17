@@ -19,9 +19,7 @@ npm start
 ```bash
 # Configure for different agent types
 npm run setup-agent sql          # SQL Agent
-npm run setup-agent code         # Code Assistant  
-npm run setup-agent math         # Math Tutor
-npm run setup-agent support      # Customer Service
+npm run setup-agent code         # Code Assistant
 npm run setup-agent general      # General AI Assistant
 ```
 
@@ -35,8 +33,7 @@ docker-compose up frontend-dev
 # Code Assistant (port 3001) 
 docker-compose up code-assistant
 
-# Math Tutor (port 3002)
-docker-compose up math-tutor
+
 
 # Production build (port 8080)
 docker-compose up frontend-prod
@@ -45,7 +42,7 @@ docker-compose up frontend-prod
 ### Multi-Agent Development
 ```bash
 # Run multiple agent types simultaneously
-docker-compose up frontend-dev code-assistant math-tutor
+docker-compose up frontend-dev code-assistant
 ```
 
 ## 🔧 **Configuration Management**
@@ -202,7 +199,7 @@ npm start
 # Quick switch between agent configurations
 npm run setup-agent sql && npm start     # SQL Agent
 npm run setup-agent code && npm start    # Code Assistant
-npm run setup-agent math && npm start    # Math Tutor
+
 ```
 
 ## 📊 **CI/CD Pipeline**
