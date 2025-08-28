@@ -1,0 +1,240 @@
+/* Message bubbles */
+.message {
+  max-width: 80%;
+  animation: fadeInUp 0.3s ease-out;
+}
+
+.message.user-message {
+  align-self: flex-end;
+  margin-left: auto;
+}
+
+.message.agent-message {
+  align-self: flex-start;
+  margin-right: auto;
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+  font-size: 12px;
+  color: #666;
+}
+
+.message-sender {
+  font-weight: 600;
+}
+
+.message-time {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.message-content {
+  background: #ffffff;
+  padding: 16px 20px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  word-wrap: break-word;
+  border: 1px solid #e0e0e0;
+}
+
+.user-message .message-content {
+  background: #0056b3;
+  color: white;
+  border-bottom-right-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 86, 179, 0.2);
+  border: none;
+}
+
+.agent-message .message-content {
+  background: #ffffff;
+  color: #333333;
+  border-bottom-left-radius: 4px;
+  border: 1px solid #e0e0e0;
+}
+
+.user-query {
+  line-height: 1.4;
+}
+
+.agent-response {
+  line-height: 1.5;
+  margin: 0;
+  word-wrap: break-word;
+}
+
+.response-text {
+  margin-bottom: 1rem;
+}
+
+.response-text:last-child {
+  margin-bottom: 0;
+}
+
+/* Markdown styling for agent responses */
+.agent-response h1,
+.agent-response h2,
+.agent-response h3,
+.agent-response h4,
+.agent-response h5,
+.agent-response h6 {
+  margin: 1em 0 0.5em 0;
+  color: #333;
+  font-weight: 600;
+}
+
+.agent-response h1:first-child,
+.agent-response h2:first-child,
+.agent-response h3:first-child,
+.agent-response h4:first-child,
+.agent-response h5:first-child,
+.agent-response h6:first-child {
+  margin-top: 0;
+}
+
+.agent-response p {
+  margin: 0.5em 0;
+  line-height: 1.6;
+}
+
+.agent-response ul,
+.agent-response ol {
+  margin: 0.5em 0;
+  padding-left: 1.5em;
+}
+
+.agent-response li {
+  margin: 0.25em 0;
+}
+
+.agent-response code {
+  background: #f4f4f4;
+  padding: 0.125em 0.25em;
+  border-radius: 3px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.9em;
+}
+
+.agent-response pre {
+  background: #f4f4f4;
+  padding: 1em;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 0.5em 0;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.9em;
+  line-height: 1.4;
+}
+
+.agent-response pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+}
+
+.agent-response blockquote {
+  border-left: 3px solid #007bff;
+  margin: 0.5em 0;
+  padding: 0.5em 1em;
+  background: #f8f9fa;
+  color: #666;
+}
+
+.agent-response strong {
+  font-weight: 600;
+  color: #333;
+}
+
+.agent-response em {
+  font-style: italic;
+}
+
+.agent-response a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.agent-response a:hover {
+  text-decoration: underline;
+}
+
+.explanation {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.explanation.no-border {
+  border-top: none;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+.explanation h4 {
+  margin: 0 0 0.5rem 0;
+  color: #007bff;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.results-summary {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border-left: 3px solid #007bff;
+}
+
+.results-summary h4 {
+  margin: 0 0 0.5rem 0;
+  color: #007bff;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.results-summary p {
+  margin: 0;
+  font-size: 13px;
+  color: #666;
+}
+
+.visualization {
+  margin: 1rem 0;
+  padding: 0.75rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.diagram-image {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: block;
+  margin: 0 auto;
+  max-width: 600px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.diagram-image:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Loading state */
+.message.loading .message-content {
+  background: #f0f0f0;
+  border: 1px solid #e0e0e0;
+}
+
+/* Responsive design for messages */
+@media (max-width: 768px) {
+  .message {
+    max-width: 90%;
+  }
+}

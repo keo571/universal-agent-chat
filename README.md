@@ -1,23 +1,27 @@
-# Agent Chat UI
+# NetBot Network Analyzer Chat
 
-A universal React chat interface that can be configured for any type of AI agent.
+A professional React chat interface for network analysis and diagram querying, specifically designed for network engineers and software engineers in financial institutions.
 
 ## Features
 
-- 🤖 **Universal Agent Support** - Works with any backend agent (SQL, Code, etc.)
-- 💬 **Modern Chat Interface** - Beautiful message bubbles with typing indicators
+- 🔍 **Network Diagram Analysis** - Upload and query network diagrams with AI
+- 📊 **Visual Results** - Interactive diagram visualization with zoom functionality
+- 💼 **Professional UI** - Clean, minimalist design suitable for enterprise environments
 - 📱 **Responsive Design** - Works seamlessly on desktop and mobile
-- ⚙️ **Fully Configurable** - Customize agent name, messages, and appearance via environment variables
-- 🔄 **Session-based History** - Chat history persists during the session (no permanent storage)
+- ⚙️ **Configurable** - Environment-based configuration for different deployments
+- 🎯 **Smart Querying** - Prevents duplicate content on repeated diagram queries
+- 🔄 **Real-time Chat** - Modern chat interface with typing indicators
 
 ## Quick Start
 
-1. **Configure your agent** (optional):
+1. **Configure the application** (optional):
    Create a `.env` file in this directory to customize the chat interface:
    ```bash
-   REACT_APP_API_URL=http://localhost:5002
-   REACT_APP_AGENT_NAME=Your Agent Name
-   REACT_APP_WELCOME_MESSAGE=Your custom welcome message
+   REACT_APP_API_URL=http://localhost:8000
+   REACT_APP_AGENT_NAME=NetBot Network Analyzer
+   REACT_APP_WELCOME_TITLE=Welcome to NetBot!
+   REACT_APP_WELCOME_MESSAGE=Upload network diagrams and ask questions about your infrastructure
+   REACT_APP_INPUT_PLACEHOLDER=Ask about network topology, devices, connections...
    ```
    See `CONFIGURATION.md` for detailed examples.
 
@@ -30,6 +34,26 @@ A universal React chat interface that can be configured for any type of AI agent
    ```bash
    npm start
    ```
+
+## Architecture
+
+This application features a clean, modular architecture:
+
+- **Component-based**: Reusable UI components with single responsibilities
+- **Custom Hooks**: Logic extraction for better code organization
+- **Service Layer**: Centralized API integration
+- **Type Safety**: PropTypes validation on all components
+- **Responsive Design**: Mobile-first CSS with professional styling
+
+See `ARCHITECTURE.md` for detailed documentation.
+
+## Backend Integration
+
+This frontend connects to the NetBot-v2 backend system:
+- **Diagram Processing**: Upload and analyze network diagrams
+- **Knowledge Graphs**: Query semantic relationships in network topology
+- **Visualization**: Generate interactive network diagrams
+- **Smart Search**: Vector and graph-based query capabilities
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

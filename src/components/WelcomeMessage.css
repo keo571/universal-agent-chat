@@ -1,0 +1,27 @@
+/* Welcome message */
+.welcome-message {
+  text-align: center;
+  color: #666666;
+  margin: auto;
+  max-width: 500px;
+  padding: 40px 32px;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  position: relative;
+}
+
+.welcome-message h3 {
+  color: #003d82;
+  margin-bottom: 16px;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 0;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.welcome-message p {
+  line-height: 1.6;
+  font-size: 16px;
+}

@@ -1,161 +1,92 @@
-import React, { useState, useEffect, useRef } from 'react';
-import './App.css';
-import { queryAgent } from './api';
+import React, { useState } from 'react';
+import './styles/global.css';
 
-// Get agent configuration from environment variables
-const AGENT_NAME = process.env.REACT_APP_AGENT_NAME || 'AI Agent';
-const AGENT_TYPE = process.env.REACT_APP_AGENT_TYPE || 'assistant';
-const WELCOME_TITLE = process.env.REACT_APP_WELCOME_TITLE || `Welcome to ${AGENT_NAME}!`;
-const WELCOME_MESSAGE = process.env.REACT_APP_WELCOME_MESSAGE || `Ask me anything! I'm here to help you with your ${AGENT_TYPE} needs.`;
-const INPUT_PLACEHOLDER = process.env.REACT_APP_INPUT_PLACEHOLDER || 'Type your question or request...';
+// Components
+import {
+  Message,
+  DiagramSelector,
+  ChatInput,
+  ImageModal,
+  TypingIndicator,
+  WelcomeMessage
+} from './components';
 
-// Message component for individual chat messages
-const Message = ({ message, isUser }) => {
-  return (
-    <div className={`message ${isUser ? 'user-message' : 'agent-message'}`}>
-      <div className="message-header">
-        <span className="message-sender">{isUser ? 'You' : AGENT_NAME}</span>
-        <span className="message-time">
-          {new Date(message.timestamp).toLocaleTimeString()}
-        </span>
-      </div>
-      <div className="message-content">
-        {isUser ? (
-          <div className="user-query">{message.content}</div>
-        ) : (
-          <pre className="agent-response">{message.content}</pre>
-        )}
-      </div>
-    </div>
-  );
-};
+// Hooks
+import { useChat, useDiagrams, useScrollToBottom } from './hooks';
+
+// Utils
+import { AGENT_CONFIG } from './utils/constants';
 
 function App() {
-  const [messages, setMessages] = useState([]);
   const [currentQuery, setCurrentQuery] = useState('');
-  const [loading, setLoading] = useState(false);
-  const messagesEndRef = useRef(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [queriedDiagrams, setQueriedDiagrams] = useState(new Set());
 
-  // Auto-scroll to bottom when new messages arrive
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  // Custom hooks
+  const { diagramId, setDiagramId, availableDiagrams, loadingDiagrams } = useDiagrams();
+  const { messages, loading, sendMessage } = useChat(queriedDiagrams, setQueriedDiagrams);
+  const messagesEndRef = useScrollToBottom(messages);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!currentQuery.trim() || loading) return;
 
-    const userMessage = {
-      id: Date.now(),
-      content: currentQuery,
-      timestamp: new Date().toISOString(),
-      isUser: true
-    };
-
-    // Add user message to chat
-    setMessages(prev => [...prev, userMessage]);
+    await sendMessage(currentQuery, diagramId);
     setCurrentQuery('');
-    setLoading(true);
-
-    try {
-      const result = await queryAgent(currentQuery);
-
-      const agentMessage = {
-        id: Date.now() + 1,
-        content: result.response,
-        timestamp: new Date().toISOString(),
-        isUser: false
-      };
-
-      setMessages(prev => [...prev, agentMessage]);
-    } catch (error) {
-      const errorMessage = {
-        id: Date.now() + 1,
-        content: `Error: ${error.message}`,
-        timestamp: new Date().toISOString(),
-        isUser: false,
-        isError: true
-      };
-
-      setMessages(prev => [...prev, errorMessage]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmit(e);
-    }
   };
 
   return (
     <div className="App">
       <div className="chat-container">
         <div className="chat-header">
-          <h1>{AGENT_NAME} Chat</h1>
+          <h1>{AGENT_CONFIG.name} Chat</h1>
         </div>
+
+        <DiagramSelector
+          diagramId={diagramId}
+          setDiagramId={setDiagramId}
+          availableDiagrams={availableDiagrams}
+          loadingDiagrams={loadingDiagrams}
+        />
 
         <div className="chat-messages">
           {messages.length === 0 ? (
-            <div className="welcome-message">
-              <h3>{WELCOME_TITLE}</h3>
-              <p>{WELCOME_MESSAGE}</p>
-            </div>
+            <WelcomeMessage 
+              title={AGENT_CONFIG.welcomeTitle}
+              message={AGENT_CONFIG.welcomeMessage}
+            />
           ) : (
             messages.map((message) => (
               <Message
                 key={message.id}
                 message={message}
                 isUser={message.isUser}
+                agentName={AGENT_CONFIG.name}
+                onImageClick={setSelectedImage}
               />
             ))
           )}
 
           {loading && (
-            <div className="message agent-message loading">
-              <div className="message-header">
-                <span className="message-sender">{AGENT_NAME}</span>
-              </div>
-              <div className="message-content">
-                <div className="typing-indicator">
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </div>
-              </div>
-            </div>
+            <TypingIndicator agentName={AGENT_CONFIG.name} />
           )}
 
           <div ref={messagesEndRef} />
         </div>
 
-        <form onSubmit={handleSubmit} className="chat-input">
-          <div className="input-container">
-            <textarea
-              value={currentQuery}
-              onChange={(e) => setCurrentQuery(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder={INPUT_PLACEHOLDER}
-              rows={1}
-              disabled={loading}
-              className="message-input"
-            />
-            <button
-              type="submit"
-              disabled={loading || !currentQuery.trim()}
-              className="send-button"
-            >
-              {loading ? '...' : 'Send'}
-            </button>
-          </div>
-        </form>
+        <ChatInput
+          currentQuery={currentQuery}
+          setCurrentQuery={setCurrentQuery}
+          loading={loading}
+          onSubmit={handleSubmit}
+          placeholder={AGENT_CONFIG.inputPlaceholder}
+        />
       </div>
+
+      <ImageModal 
+        selectedImage={selectedImage} 
+        onClose={() => setSelectedImage(null)} 
+      />
     </div>
   );
 }
