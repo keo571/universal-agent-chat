@@ -2,7 +2,7 @@
   "name": "universal-agent-chat",
   "version": "0.1.0",
   "private": false,
-  "description": "A universal React chat interface that can be configured for any type of AI agent",
+  "description": "A universal React chat interface supporting NetBot-v2 diagrams and Netquery SQL generation",
   "keywords": [
     "react",
     "chatbot",

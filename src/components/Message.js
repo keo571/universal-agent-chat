@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactMarkdown from 'react-markdown';
+import JsonTable from './JsonTable';
 import './Message.css';
 
 const Message = React.memo(({ message, isUser, agentName, onImageClick }) => {
@@ -28,6 +29,11 @@ const Message = React.memo(({ message, isUser, agentName, onImageClick }) => {
                   className="diagram-image"
                   onClick={() => onImageClick(message.visualization_path)}
                 />
+              </div>
+            )}
+            {message.results && (
+              <div className="results-table">
+                <JsonTable data={message.results} />
               </div>
             )}
             {message.explanation && (

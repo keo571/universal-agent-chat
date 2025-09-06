@@ -35,6 +35,7 @@ function App() {
     setCurrentQuery('');
   };
 
+
   return (
     <div className="App">
       <div className="chat-container">

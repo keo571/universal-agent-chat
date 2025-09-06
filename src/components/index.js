@@ -6,3 +6,4 @@ export { default as ImageModal } from './ImageModal';
 export { default as TypingIndicator } from './TypingIndicator';
 export { default as WelcomeMessage } from './WelcomeMessage';
 export { default as GraphVisualization } from './GraphVisualization';
+export { default as JsonTable } from './JsonTable';

@@ -49,11 +49,21 @@ See `ARCHITECTURE.md` for detailed documentation.
 
 ## Backend Integration
 
-This frontend connects to the NetBot-v2 backend system:
+This frontend supports multiple backend integrations:
+
+### NetBot-v2 (Default)
 - **Diagram Processing**: Upload and analyze network diagrams
 - **Knowledge Graphs**: Query semantic relationships in network topology
 - **Visualization**: Generate interactive network diagrams
 - **Smart Search**: Vector and graph-based query capabilities
+
+### Netquery Integration
+- **AI-Powered SQL**: Natural language to SQL conversion
+- **Infrastructure Queries**: Load balancers, servers, certificates, VIPs
+- **Rich Explanations**: SQL breakdowns with process insights
+- **Data Tables**: Interactive, scrollable result tables
+
+> 📖 **For Netquery setup**, see [README_NETQUERY.md](README_NETQUERY.md)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
