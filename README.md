@@ -59,6 +59,14 @@ npm start
 ### 3. Open Browser
 Visit `http://localhost:3000` and start asking questions about your infrastructure data!
 
+## ⚡ Quick Development Setup
+
+For a faster setup, use the provided script:
+```bash
+./scripts/dev-setup.sh
+npm run full-dev  # Starts both backend and frontend
+```
+
 ## 🧪 Example Queries
 
 ```
@@ -137,18 +145,23 @@ npm start
 ## 📁 Project Structure
 
 ```
-├── src/                    # React application
-│   ├── components/         # UI components
-│   ├── hooks/             # Custom React hooks
-│   └── styles/            # CSS and styling
-├── public/                # Static assets
-├── netquery_server.py     # FastAPI backend server
-├── test_fastapi_adapter.py # Test script
-├── test_scroll_display.py  # Test scroll behavior
-├── FRONTEND_CHARTS.md     # Chart implementation guide
-├── requirements.txt       # Python dependencies
-├── package.json          # Node.js dependencies
-└── .env.default          # Environment template
+├── src/                           # React application
+│   ├── components/                # UI components (Message, DataTable, Charts)
+│   │   ├── DataVisualization.js   # Recharts integration
+│   │   ├── JsonTable.js           # Progressive disclosure table
+│   │   └── Message.js             # Main message component
+│   ├── hooks/                     # Custom React hooks
+│   └── services/                  # API integration
+├── docs/                          # Documentation
+│   ├── FRONTEND_CHARTS.md         # Chart implementation guide
+│   └── README_SETUP.md            # Detailed setup guide
+├── scripts/                       # Development utilities
+│   └── dev-setup.sh               # Environment setup script
+├── public/                        # Static assets
+├── netquery_server.py             # FastAPI backend adapter
+├── requirements.txt               # Python dependencies
+├── package.json                   # Node.js dependencies
+└── .env.default                   # Environment template
 ```
 
 ## 🎯 Benefits
