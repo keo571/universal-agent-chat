@@ -162,10 +162,9 @@ npm start
 
 ## 📖 Additional Documentation
 
-- `README_SETUP.md` - Detailed setup and configuration guide
-- `FRONTEND_CHARTS.md` - Complete guide for implementing chart rendering
-- `test_fastapi_adapter.py` - Test the backend integration
-- `test_scroll_display.py` - Test scroll behavior and visualizations
+- [`docs/README_SETUP.md`](docs/README_SETUP.md) - Detailed setup and configuration guide
+- [`docs/FRONTEND_CHARTS.md`](docs/FRONTEND_CHARTS.md) - Complete guide for implementing chart rendering
+- [`netquery_server.py`](netquery_server.py) - FastAPI adapter server for Netquery integration
 
 ## Available Scripts
 
