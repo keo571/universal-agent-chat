@@ -190,6 +190,12 @@ Launches the test runner in interactive watch mode.
 ### `npm run build`
 Builds the app for production to the `build` folder.
 
+### `npm run backend`
+Starts the FastAPI backend adapter server.
+
+### `npm run full-dev`
+Starts both backend and frontend concurrently (requires `concurrently` package).
+
 ### `npm run eject`
 **Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
