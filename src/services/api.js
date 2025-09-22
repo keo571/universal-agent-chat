@@ -1,6 +1,6 @@
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';
 
-export const queryAgent = async (query, diagramId = null) => {
+export const queryAgent = async (query) => {
     try {
         const response = await fetch(`${API_URL}/chat`, {
             method: 'POST',
@@ -9,9 +9,7 @@ export const queryAgent = async (query, diagramId = null) => {
             },
             body: JSON.stringify({
                 message: query,
-                diagram_id: diagramId || '',
-                method: 'auto',
-                explanation_detail: 'basic'
+                method: 'auto'
             }),
         });
 

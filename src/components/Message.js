@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactMarkdown from 'react-markdown';
 import JsonTable from './JsonTable';
+import DataVisualization from './DataVisualization';
 import './Message.css';
 
 const Message = React.memo(({ message, isUser, agentName, onImageClick }) => {
@@ -18,9 +19,44 @@ const Message = React.memo(({ message, isUser, agentName, onImageClick }) => {
           <div className="user-query">{message.content}</div>
         ) : (
           <div className="agent-response">
-            <div className="response-text">
-              <ReactMarkdown>{message.content}</ReactMarkdown>
-            </div>
+            {/* 1. SQL Query */}
+            {message.metadata?.sql && (
+              <div className="sql-section">
+                <h4>SQL Query:</h4>
+                <pre className="sql-code">
+                  <code>{message.metadata.sql}</code>
+                </pre>
+              </div>
+            )}
+
+            {/* 2. Data Table */}
+            {message.results && (
+              <div className="results-table">
+                <JsonTable
+                  data={message.results}
+                  displayInfo={message.display_info}
+                  queryId={message.query_id}
+                />
+              </div>
+            )}
+
+            {/* 3. Analysis */}
+            {message.explanation && (
+              <div className="explanation">
+                <h4>Analysis:</h4>
+                <ReactMarkdown>{message.explanation}</ReactMarkdown>
+              </div>
+            )}
+
+            {/* 4. Chart (if visualization config provided) */}
+            {message.visualization && (
+              <DataVisualization
+                visualization={message.visualization}
+                data={message.results}
+              />
+            )}
+
+            {/* Legacy: Keep image support for backward compatibility */}
             {message.visualization_path && (
               <div className="visualization">
                 <img
@@ -29,16 +65,6 @@ const Message = React.memo(({ message, isUser, agentName, onImageClick }) => {
                   className="diagram-image"
                   onClick={() => onImageClick(message.visualization_path)}
                 />
-              </div>
-            )}
-            {message.results && (
-              <div className="results-table">
-                <JsonTable data={message.results} />
-              </div>
-            )}
-            {message.explanation && (
-              <div className={`explanation ${!message.content && !message.visualization_path ? 'no-border' : ''}`}>
-                <ReactMarkdown>{message.explanation}</ReactMarkdown>
               </div>
             )}
           </div>

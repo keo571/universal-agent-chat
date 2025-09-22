@@ -1,11 +1,11 @@
 import { useState, useCallback } from 'react';
 import { queryAgent } from '../services/api';
 
-export const useChat = (queriedDiagrams, setQueriedDiagrams) => {
+export const useChat = () => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const sendMessage = useCallback(async (query, diagramId) => {
+  const sendMessage = useCallback(async (query) => {
     if (!query.trim() || loading) return;
 
     const userMessage = {
@@ -20,22 +20,20 @@ export const useChat = (queriedDiagrams, setQueriedDiagrams) => {
     setLoading(true);
 
     try {
-      const result = await queryAgent(query, diagramId || null);
+      const result = await queryAgent(query);
       console.log('API result:', result); // Debug log
 
-      // Track that this diagram has been queried
-      const isFirstQuery = diagramId && !queriedDiagrams.has(diagramId);
-      if (diagramId && isFirstQuery) {
-        setQueriedDiagrams(prev => new Set([...prev, diagramId]));
-      }
 
       const agentMessage = {
         id: Date.now() + 1,
-        content: isFirstQuery ? result.response : '', // Hide summary for subsequent queries
+        content: result.response, // Summary response
         explanation: result.explanation,
         results: result.results,
-        visualization_path: isFirstQuery ? result.visualization_path : null, // Hide image for subsequent queries
-        visualization_data: isFirstQuery ? result.visualization_data : null, // Add JSON visualization data
+        visualization: result.visualization, // Chart config from backend
+        visualization_path: result.visualization_path, // Legacy image support
+        display_info: result.display_info, // Progressive disclosure info
+        query_id: result.query_id, // For download functionality
+        metadata: result.metadata, // Contains SQL and other metadata
         timestamp: new Date().toISOString(),
         isUser: false
       };
@@ -54,7 +52,7 @@ export const useChat = (queriedDiagrams, setQueriedDiagrams) => {
     } finally {
       setLoading(false);
     }
-  }, [loading, queriedDiagrams, setQueriedDiagrams]);
+  }, [loading]);
 
   return {
     messages,

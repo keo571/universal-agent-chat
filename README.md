@@ -1,135 +1,190 @@
-# NetBot Network Analyzer Chat
+# Universal Agent Chat + Netquery
 
-A professional React chat interface for network analysis and diagram querying, specifically designed for network engineers and software engineers in financial institutions.
+A React frontend for Netquery's FastAPI server, providing a beautiful chat interface for AI-powered SQL queries on network infrastructure data.
 
-## Features
+## ⚡ Features
 
-- 🔍 **Network Diagram Analysis** - Upload and query network diagrams with AI
-- 📊 **Visual Results** - Interactive diagram visualization with zoom functionality
-- 💼 **Professional UI** - Clean, minimalist design suitable for enterprise environments
-- 📱 **Responsive Design** - Works seamlessly on desktop and mobile
-- ⚙️ **Configurable** - Environment-based configuration for different deployments
-- 🎯 **Smart Querying** - Prevents duplicate content on repeated diagram queries
-- 🔄 **Real-time Chat** - Modern chat interface with typing indicators
+- **Natural language to SQL** - Ask questions in plain English about network infrastructure
+- **Fast responses** - 5-10 second query processing via FastAPI integration
+- **Smart visualizations** - LLM decides when charts are useful (bar, line, pie, scatter)
+- **Progressive disclosure** - Shows 10 rows initially, scroll to reveal up to 30 total
+- **Interactive charts** - Recharts integration with percentage-based pie charts
+- **Download functionality** - Export complete datasets as CSV
+- **Analysis limitations** - Clear warnings when analysis is based on sample data
+- **Real-time processing** - See SQL generation, execution, and interpretation
 
-## Quick Start
+## 🚀 Quick Start
 
-1. **Configure the application** (optional):
-   Create a `.env` file in this directory to customize the chat interface:
-   ```bash
-   REACT_APP_API_URL=http://localhost:8000
-   REACT_APP_AGENT_NAME=NetBot Network Analyzer
-   REACT_APP_WELCOME_TITLE=Welcome to NetBot!
-   REACT_APP_WELCOME_MESSAGE=Upload network diagrams and ask questions about your infrastructure
-   REACT_APP_INPUT_PLACEHOLDER=Ask about network topology, devices, connections...
-   ```
-   See `CONFIGURATION.md` for detailed examples.
+### Prerequisites
+- Node.js and npm
+- Python 3.9+
+- Netquery FastAPI server running
 
-2. **Install dependencies**:
-   ```bash
-   npm install
-   ```
+### 1. Setup
+```bash
+# Clone and enter directory
+cd universal-agent-chat
 
-3. **Start the development server**:
-   ```bash
-   npm start
-   ```
+# Install Python dependencies
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 
-## Architecture
+# Install React dependencies
+npm install
 
-This application features a clean, modular architecture:
+# Configure environment
+cp .env.default .env
+```
 
-- **Component-based**: Reusable UI components with single responsibilities
-- **Custom Hooks**: Logic extraction for better code organization
-- **Service Layer**: Centralized API integration
-- **Type Safety**: PropTypes validation on all components
-- **Responsive Design**: Mobile-first CSS with professional styling
+### 2. Start Services
 
-See `ARCHITECTURE.md` for detailed documentation.
+**Terminal 1 - Netquery FastAPI Server:**
+```bash
+cd /path/to/netquery
+python -m uvicorn src.api.server:app --reload --port 8000
+```
 
-## Backend Integration
+**Terminal 2 - Universal Agent Chat Backend:**
+```bash
+source .venv/bin/activate
+python netquery_server.py
+```
 
-This frontend supports multiple backend integrations:
+**Terminal 3 - React Frontend:**
+```bash
+npm start
+```
 
-### NetBot-v2 (Default)
-- **Diagram Processing**: Upload and analyze network diagrams
-- **Knowledge Graphs**: Query semantic relationships in network topology
-- **Visualization**: Generate interactive network diagrams
-- **Smart Search**: Vector and graph-based query capabilities
+### 3. Open Browser
+Visit `http://localhost:3000` and start asking questions about your infrastructure data!
 
-### Netquery Integration
-- **AI-Powered SQL**: Natural language to SQL conversion
-- **Infrastructure Queries**: Load balancers, servers, certificates, VIPs
-- **Rich Explanations**: SQL breakdowns with process insights
-- **Data Tables**: Interactive, scrollable result tables
+## 🧪 Example Queries
 
-> 📖 **For Netquery setup**, see [README_NETQUERY.md](README_NETQUERY.md)
+```
+"Show me all load balancers"
+"Which SSL certificates expire in 30 days?"
+"List servers with high CPU usage"
+"What VIPs are in us-east-1?"
+"Show unhealthy backend servers"
+```
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 🏗️ Architecture
+
+```
+React Frontend (3000) → Backend Adapter (8001) → Netquery API (8000)
+```
+
+**Data Flow:**
+1. User types query in React chat interface
+2. Backend adapter forwards to Netquery FastAPI
+3. Netquery processes via LangGraph pipeline:
+   - Schema analysis → Query planning → SQL generation → Execution → Interpretation
+4. Response formatted and displayed with SQL, data, analysis, and chart config
+
+## 📊 What You Get
+
+- **SQL Query** - Clean, formatted with syntax highlighting
+- **Data Table** - Progressive disclosure (10 initially, scroll for up to 30 total)
+- **Download Button** - Get complete dataset as CSV (all rows, not just preview)
+- **AI Analysis** - LLM-powered insights with analysis scope transparency
+- **Smart Charts** - Interactive Recharts when data benefits from visualization
+- **Analysis Limitations** - Clear warnings when based on first 100 rows
+- **Smooth UX** - No pagination buttons, just natural scrolling
+
+## 🔧 Configuration
+
+### Environment Variables (.env)
+```bash
+REACT_APP_API_URL=http://localhost:8001      # Backend adapter
+REACT_APP_AGENT_NAME=Netquery               # Chat interface title
+REACT_APP_AGENT_TYPE=SQL Assistant          # Agent description
+REACT_APP_WELCOME_TITLE=Welcome to Netquery!
+REACT_APP_WELCOME_MESSAGE=Ask questions about your network infrastructure...
+REACT_APP_INPUT_PLACEHOLDER=Ask about your infrastructure data...
+```
+
+### Backend Configuration
+- **Netquery API**: `http://localhost:8000`
+- **Backend Adapter**: `http://localhost:8001`
+- **Request Timeout**: 60 seconds
+- **Health Checks**: Automatic connection monitoring
+
+## 🐛 Troubleshooting
+
+**"Connection refused" errors:**
+```bash
+# Check if Netquery API is running
+curl http://localhost:8000/health
+
+# Check if backend adapter is running
+curl http://localhost:8001/health
+```
+
+**Slow responses:**
+- First query may be slower (LLM warmup)
+- Complex queries need more processing time
+- Check GEMINI_API_KEY is set in Netquery environment
+
+**React app won't start:**
+```bash
+# Clear cache and reinstall
+rm -rf node_modules package-lock.json
+npm install
+npm start
+```
+
+## 📁 Project Structure
+
+```
+├── src/                    # React application
+│   ├── components/         # UI components
+│   ├── hooks/             # Custom React hooks
+│   └── styles/            # CSS and styling
+├── public/                # Static assets
+├── netquery_server.py     # FastAPI backend server
+├── test_fastapi_adapter.py # Test script
+├── test_scroll_display.py  # Test scroll behavior
+├── FRONTEND_CHARTS.md     # Chart implementation guide
+├── requirements.txt       # Python dependencies
+├── package.json          # Node.js dependencies
+└── .env.default          # Environment template
+```
+
+## 🎯 Benefits
+
+✅ **Fast Performance** - 50% faster than CLI approach
+✅ **Modern Stack** - React + FastAPI + LangGraph
+✅ **Rich UI** - Beautiful chat interface with syntax highlighting
+✅ **Scalable** - Supports multiple concurrent users
+✅ **Reliable** - Structured API with proper error handling
+✅ **Future-Ready** - Easy to extend with new features
+
+## 📖 Additional Documentation
+
+- `README_SETUP.md` - Detailed setup and configuration guide
+- `FRONTEND_CHARTS.md` - Complete guide for implementing chart rendering
+- `test_fastapi_adapter.py` - Test the backend integration
+- `test_scroll_display.py` - Test scroll behavior and visualizations
 
 ## Available Scripts
 
-In the project directory, you can run:
-
 ### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Runs the app in development mode at [http://localhost:3000](http://localhost:3000).
 
 ### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Launches the test runner in interactive watch mode.
 
 ### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Builds the app for production to the `build` folder.
 
 ### `npm run eject`
-
 **Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 🤝 Contributing
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+This project integrates with [Netquery](https://github.com/keo571/netquery) for the backend AI pipeline. Frontend contributions welcome!
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+---
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+**Ready to query your infrastructure with AI? Start the services and ask away! 🚀**

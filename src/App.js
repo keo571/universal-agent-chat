@@ -4,7 +4,6 @@ import './styles/global.css';
 // Components
 import {
   Message,
-  DiagramSelector,
   ChatInput,
   ImageModal,
   TypingIndicator,
@@ -12,7 +11,7 @@ import {
 } from './components';
 
 // Hooks
-import { useChat, useDiagrams, useScrollToBottom } from './hooks';
+import { useChat, useScrollToBottom } from './hooks';
 
 // Utils
 import { AGENT_CONFIG } from './utils/constants';
@@ -20,18 +19,16 @@ import { AGENT_CONFIG } from './utils/constants';
 function App() {
   const [currentQuery, setCurrentQuery] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
-  const [queriedDiagrams, setQueriedDiagrams] = useState(new Set());
 
   // Custom hooks
-  const { diagramId, setDiagramId, availableDiagrams, loadingDiagrams } = useDiagrams();
-  const { messages, loading, sendMessage } = useChat(queriedDiagrams, setQueriedDiagrams);
+  const { messages, loading, sendMessage } = useChat();
   const messagesEndRef = useScrollToBottom(messages);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!currentQuery.trim() || loading) return;
 
-    await sendMessage(currentQuery, diagramId);
+    await sendMessage(currentQuery);
     setCurrentQuery('');
   };
 
@@ -43,12 +40,6 @@ function App() {
           <h1>{AGENT_CONFIG.name} Chat</h1>
         </div>
 
-        <DiagramSelector
-          diagramId={diagramId}
-          setDiagramId={setDiagramId}
-          availableDiagrams={availableDiagrams}
-          loadingDiagrams={loadingDiagrams}
-        />
 
         <div className="chat-messages">
           {messages.length === 0 ? (

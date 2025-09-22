@@ -2,15 +2,17 @@
   "name": "universal-agent-chat",
   "version": "0.1.0",
   "private": false,
-  "description": "A universal React chat interface supporting NetBot-v2 diagrams and Netquery SQL generation",
+  "description": "React chat interface for Netquery FastAPI server with smart visualizations and progressive disclosure",
   "keywords": [
     "react",
-    "chatbot",
-    "ai",
-    "agent",
+    "fastapi",
+    "netquery",
+    "sql",
     "chat",
-    "ui",
-    "universal"
+    "charts",
+    "recharts",
+    "visualization",
+    "infrastructure"
   ],
   "author": "QW",
   "license": "MIT",
@@ -18,7 +20,6 @@
     "type": "git",
     "url": "https://github.com/keo571/universal-agent-chat.git"
   },
-  "proxy": "http://localhost:8000",
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
@@ -30,6 +31,7 @@
     "react-force-graph-2d": "^1.28.0",
     "react-markdown": "^10.1.0",
     "react-scripts": "5.0.1",
+    "recharts": "^3.2.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
