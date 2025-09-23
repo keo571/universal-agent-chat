@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import ReactMarkdown from 'react-markdown';
 import PaginatedTable from './PaginatedTable';
+import DataVisualization from './DataVisualization';
 import './Message.css';
 
 const StreamingMessage = React.memo(({
@@ -86,8 +87,10 @@ const StreamingMessage = React.memo(({
               <div className="results-table fade-in">
                 <PaginatedTable
                   data={message.results}
-                  pageSize={10}
-                  maxDisplay={30}
+                  pageSize={message.display_info?.initial_display || 20}
+                  maxDisplay={message.results.length}
+                  displayInfo={message.display_info}
+                  queryId={message.query_id}
                 />
               </div>
             )}
@@ -95,6 +98,15 @@ const StreamingMessage = React.memo(({
             {!isStreaming && message.explanation && (
               <div className={`explanation fade-in ${!displayedContent && !message.visualization_path ? 'no-border' : ''}`}>
                 <ReactMarkdown>{message.explanation}</ReactMarkdown>
+              </div>
+            )}
+
+            {!isStreaming && message.visualization && (
+              <div className="visualization fade-in">
+                <DataVisualization
+                  visualization={message.visualization}
+                  data={message.results}
+                />
               </div>
             )}
           </div>

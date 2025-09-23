@@ -49,6 +49,63 @@
   background: #1976D2;
 }
 
+/* Table wrapper for scrolling */
+.json-table-wrapper {
+  overflow: auto;
+  max-height: 400px;
+  border: 1px solid #e1e5e9;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Table styling */
+.json-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.json-table th {
+  background-color: #f8f9fa;
+  color: #495057;
+  font-weight: 600;
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 2px solid #dee2e6;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.json-table td {
+  padding: 10px 16px;
+  border-bottom: 1px solid #e9ecef;
+  vertical-align: top;
+  white-space: nowrap;
+  min-width: 100px;
+}
+
+.json-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.json-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.json-table-empty {
+  padding: 20px;
+  text-align: center;
+  color: #6c757d;
+  font-style: italic;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+}
+
 /* Fade-in animation for new rows */
 @keyframes fadeIn {
   from {

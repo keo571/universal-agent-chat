@@ -2,24 +2,49 @@ import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import './PaginatedTable.css';
 
-const PaginatedTable = ({ data, pageSize = 10, maxDisplay = 30 }) => {
+const BACKEND_API_URL = 'http://localhost:8000'; // Direct backend connection for downloads
+
+const PaginatedTable = ({ data, pageSize = 10, maxDisplay = 30, displayInfo, queryId }) => {
   const [displayedRows, setDisplayedRows] = useState(pageSize);
-
-  if (!data || !Array.isArray(data) || data.length === 0) {
-    return <div className="json-table-empty">No data available</div>;
-  }
-
-  const headers = Object.keys(data[0]);
-  const totalRows = data.length;
-  const visibleData = data.slice(0, displayedRows);
-  const hasMore = displayedRows < Math.min(totalRows, maxDisplay);
-  const showDownload = totalRows > maxDisplay;
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const handleLoadMore = useCallback(() => {
     setDisplayedRows(prev => Math.min(prev + pageSize, maxDisplay));
   }, [pageSize, maxDisplay]);
 
-  const downloadCSV = useCallback(() => {
+  // Server-side download for full dataset
+  const downloadFullDataset = useCallback(async () => {
+    if (!queryId) return;
+
+    setIsDownloading(true);
+    try {
+      const response = await fetch(`${BACKEND_API_URL}/api/download/${queryId}`);
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = `query_results_${queryId.slice(0, 8)}_${new Date().toISOString().slice(0, 10)}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      } else {
+        console.error('Download failed');
+      }
+    } catch (error) {
+      console.error('Download error:', error);
+    } finally {
+      setIsDownloading(false);
+    }
+  }, [queryId]);
+
+  // Local CSV download for cached data only
+  const downloadCachedCSV = useCallback(() => {
+    if (!data || !Array.isArray(data) || data.length === 0) return;
+
+    const headers = Object.keys(data[0]);
     const csvContent = [
       headers.join(','),
       ...data.map(row =>
@@ -31,26 +56,56 @@ const PaginatedTable = ({ data, pageSize = 10, maxDisplay = 30 }) => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `query_results_${Date.now()}.csv`;
+    link.download = `cached_results_${Date.now()}.csv`;
     link.click();
     URL.revokeObjectURL(url);
-  }, [data, headers]);
+  }, [data]);
+
+  if (!data || !Array.isArray(data) || data.length === 0) {
+    return <div className="json-table-empty">No data available</div>;
+  }
+
+  const headers = Object.keys(data[0]);
+  const totalRows = data.length;
+  const visibleData = data.slice(0, displayedRows);
+  const hasMore = displayedRows < Math.min(totalRows, maxDisplay);
+  const hasFullDataset = displayInfo?.total_in_dataset && displayInfo.total_in_dataset !== totalRows;
 
   return (
     <div className="paginated-table-container">
       <div className="table-header">
         <span className="row-info">
           Showing {visibleData.length} of {totalRows} rows
+          {displayInfo?.total_in_dataset && (
+            <span> (total in dataset: {displayInfo.total_in_dataset})</span>
+          )}
         </span>
-        {showDownload && (
-          <button
-            className="download-csv-btn"
-            onClick={downloadCSV}
-            title="Download all data as CSV"
-          >
-            📥 Download CSV ({totalRows} rows)
-          </button>
-        )}
+
+        {/* Download buttons */}
+        <div className="download-buttons">
+          {hasFullDataset && queryId ? (
+            <button
+              className="download-csv-btn primary"
+              onClick={downloadFullDataset}
+              disabled={isDownloading}
+              title="Download complete dataset from server"
+            >
+              {isDownloading ? (
+                <>⏳ Downloading...</>
+              ) : (
+                <>📥 Download Full Dataset ({displayInfo.total_in_dataset} rows)</>
+              )}
+            </button>
+          ) : (
+            <button
+              className="download-csv-btn"
+              onClick={downloadCachedCSV}
+              title="Download cached data as CSV"
+            >
+              📥 Download CSV ({totalRows} rows)
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="json-table-wrapper">
@@ -93,7 +148,9 @@ const PaginatedTable = ({ data, pageSize = 10, maxDisplay = 30 }) => {
 PaginatedTable.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object),
   pageSize: PropTypes.number,
-  maxDisplay: PropTypes.number
+  maxDisplay: PropTypes.number,
+  displayInfo: PropTypes.object,
+  queryId: PropTypes.string
 };
 
 export default PaginatedTable;

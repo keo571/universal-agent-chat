@@ -8,8 +8,7 @@ export const queryAgent = async (query) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                message: query,
-                method: 'auto'
+                message: query
             }),
         });
 
@@ -24,18 +23,3 @@ export const queryAgent = async (query) => {
         throw error;
     }
 };
-
-export const listDiagrams = async () => {
-    try {
-        const response = await fetch(`${API_URL}/diagrams`);
-        if (!response.ok) {
-            throw new Error('Failed to fetch diagrams');
-        }
-        return await response.json();
-    } catch (error) {
-        console.error('API Error:', error);
-        throw error;
-    }
-};
-
-

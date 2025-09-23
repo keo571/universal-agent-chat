@@ -3,7 +3,7 @@ import './styles/global.css';
 
 // Components
 import {
-  Message,
+  StreamingMessage,
   ChatInput,
   ImageModal,
   TypingIndicator,
@@ -49,7 +49,7 @@ function App() {
             />
           ) : (
             messages.map((message) => (
-              <Message
+              <StreamingMessage
                 key={message.id}
                 message={message}
                 isUser={message.isUser}

@@ -7,6 +7,7 @@ Uses Netquery's new FastAPI endpoints for faster, more reliable communication.
 import asyncio
 import logging
 import json
+import os
 from typing import Dict, Any, Optional
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -31,13 +32,11 @@ app.add_middleware(
 
 class ChatRequest(BaseModel):
     message: str
-    method: Optional[str] = "auto"
 
 class ChatResponse(BaseModel):
     response: str
     explanation: str
     results: Optional[list] = None
-    visualization_path: Optional[str] = None
     visualization: Optional[dict] = None  # LLM-suggested visualization
     display_info: Optional[dict] = None  # Display guidance for frontend
     query_id: Optional[str] = None  # For download functionality
@@ -45,8 +44,8 @@ class ChatResponse(BaseModel):
 class NetqueryFastAPIClient:
     """Client to communicate with Netquery FastAPI server."""
 
-    def __init__(self, base_url: str = "http://localhost:8000"):
-        self.base_url = base_url
+    def __init__(self, base_url: str = None):
+        self.base_url = base_url or os.getenv("NETQUERY_API_URL", "http://localhost:8000")
 
     async def query(self, message: str) -> Dict[str, Any]:
         """Send query to Netquery FastAPI server and get complete response."""
@@ -107,14 +106,8 @@ class NetqueryFastAPIClient:
         columns = execute_data.get("columns", [])
         truncated = execute_data.get("truncated", False)
 
-        # Create response summary
-        if data:
-            count_text = f"{total_count}" if total_count is not None else "1000+"
-            response_summary = f"Found {count_text} rows"
-            if truncated:
-                response_summary += f" (showing first {len(data)})"
-        else:
-            response_summary = "No data found matching your query"
+        # Create response summary - remove "Found X rows" text
+        response_summary = ""
 
         # Build explanation
         explanation = f"**SQL Query:**\n```sql\n{sql}\n```\n\n"
@@ -126,22 +119,12 @@ class NetqueryFastAPIClient:
             findings = interp.get("key_findings", [])
 
             if summary:
-                explanation += f"**Summary**\n{summary}\n\n"
+                explanation += f"**Summary:**\n{summary}\n\n"
 
             if findings:
                 explanation += "**Key Findings:**\n"
                 for i, finding in enumerate(findings, 1):
                     explanation += f"{i}. {finding}\n"
-                explanation += "\n"
-
-            # Add visualization info if available
-            viz = interpretation_data.get("visualization")
-            if viz:
-                explanation += f"**Suggested Visualization:**\n"
-                explanation += f"- {viz['type'].title()} chart: {viz['title']}\n"
-                config = viz.get('config', {})
-                if config.get('reason'):
-                    explanation += f"- {config['reason']}\n"
                 explanation += "\n"
 
             # Show analysis limitations only when dataset > 100 rows
@@ -151,40 +134,30 @@ class NetqueryFastAPIClient:
                 explanation += "**Analysis Note:** Insights based on first 100 rows of more than 1000 rows. Download full dataset for complete analysis.\n\n"
 
 
-        # Simplified approach: Return all data (up to 30 rows max)
-        # Frontend will handle showing 10 initially, then all 30 on scroll
-        max_display_rows = 30
-        display_data = data[:max_display_rows]
+        # Return all data from backend (no additional limits in adapter)
+        # The backend already applies its own limits (currently 100 rows max)
+        display_data = data
+
+        # Frontend pagination hint - could be made configurable via env var
+        initial_display = int(os.getenv("FRONTEND_INITIAL_ROWS", "20"))
 
         display_info = {
             "total_rows": len(display_data),
-            "initial_display": 10,  # Frontend should show first 10 rows initially
-            "max_display": max_display_rows,
-            "has_scroll_data": len(display_data) > 10,  # True if there are more rows to reveal on scroll
+            "initial_display": initial_display,
+            "has_scroll_data": len(display_data) > initial_display,
             "total_in_dataset": total_count if total_count is not None else "1000+"
         }
 
         # Extract visualization if available
-        visualization = None
-        if interpretation_data:
-            visualization = interpretation_data.get("visualization")
+        visualization = interpretation_data.get("visualization") if interpretation_data else None
 
         return {
             "response": response_summary,
             "explanation": explanation,
             "results": display_data,
-            "visualization_path": None,  # Could be enhanced later with actual chart generation
             "visualization": visualization,
             "display_info": display_info,
-            "query_id": query_id,  # For frontend download functionality
-            "metadata": {
-                "sql": sql,
-                "total_count": total_count,
-                "columns": columns,
-                "truncated": truncated,
-                "interpretation": interpretation_data,
-                "query_id": query_id
-            }
+            "query_id": query_id
         }
 
 # Initialize netquery client
@@ -203,7 +176,6 @@ async def chat_endpoint(request: ChatRequest):
             response=response_data["response"],
             explanation=response_data["explanation"],
             results=response_data["results"],
-            visualization_path=response_data["visualization_path"],
             visualization=response_data["visualization"],
             display_info=response_data["display_info"],
             query_id=response_data["query_id"]
@@ -240,12 +212,12 @@ async def health_check():
         }
 
 if __name__ == "__main__":
+    netquery_url = os.getenv("NETQUERY_API_URL", "http://localhost:8000")
+    adapter_port = int(os.getenv("ADAPTER_PORT", "8001"))
+
     print("🚀 Starting Universal Agent Chat - Netquery FastAPI Adapter")
-    print("📡 Will connect to Netquery API at: http://localhost:8000")
-    print("🌐 Frontend should connect to: http://localhost:8001")
-    print("\nMake sure Netquery FastAPI server is running:")
-    print("  cd /Users/qiyao/Code/netquery")
-    print("  python -m uvicorn src.api.server:app --reload --port 8000")
+    print(f"📡 Will connect to Netquery API at: {netquery_url}")
+    print(f"🌐 Frontend should connect to: http://localhost:{adapter_port}")
     print()
 
-    uvicorn.run("netquery_server:app", host="0.0.0.0", port=8001, reload=True)
+    uvicorn.run("netquery_server:app", host="0.0.0.0", port=adapter_port, reload=True)
